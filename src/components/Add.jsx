@@ -16,7 +16,6 @@ const Add = () => {
 
   console.log(projectDetails);
   
-
   const [show, setShow] = useState(false);
 
   useEffect(()=>{
