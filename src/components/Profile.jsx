@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Collapse } from 'react-bootstrap';
 import uploadImg from '../assets/profile.jpg'
 import SERVER_BASE_URL from '../services/serverURL';
+import { updateUserAPI } from '../services/allAPI';
 
 const Profile = () => {
   const [open, setOpen] = useState(false);
@@ -47,11 +48,23 @@ const Profile = () => {
         "Authorization" : `Bearer ${token}`
       }
       // make api call
+      try {
+        const result = await updateUserAPI(reqBody, reqHeader)
+        if(result.status==200) {
+          alert("Profile updated successfully")
+          // storage update user in session
+          sessionStorage.setItem("user",JSON.stringify(result.data))
+          // collapse profile
+          setOpen(!open)
+        }
+      } catch(err) {
+        console.log(err)
+      }
+    } 
+    } else {
+        alert("Please fill the form Completely")
     }
-  } else {
-    alert("Please fill the form Completely")
   }
-}
 
   return (
     <>
@@ -79,7 +92,7 @@ const Profile = () => {
             <input value={userDetails.linkedin} onChange={e => setUserDetails ({...userDetails,linkedin:e.target.value})} type="text" placeholder='User LinkedIn Link' className="form-control" />
           </div>
           <div className="d-grid w-100">
-            <button className="btn btn-warning">Update</button>
+            <button onClick={handleUserUpdate} className="btn btn-warning">Update</button>
           </div>
         </div>
       </Collapse>
